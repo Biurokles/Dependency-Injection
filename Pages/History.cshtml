@@ -1,0 +1,78 @@
+﻿@page "/History/{pageIndex:int?}"
+
+@model Serwis.Pages.HistoryModel
+@{
+    var history = Model.LeapYearChecks;
+    int index = 1;
+}
+
+@if (history.Any())
+{
+    <ul class="list-group">
+        <li class="list-group-item list-group-item-primary">
+            <div class="row text-center">
+                <div class="col-1">
+                    Nr
+                </div>
+                <div class="col-1">
+                    Id
+                </div>
+                <div class="col-2">
+                    Login
+                </div>
+                <div class="col-2">
+                    Imię
+                </div>
+                <div class="col-1">
+                    Rok
+                </div>
+                <div class="col-2">
+                    Czy przestępny?
+                </div>
+                <div class="col-2">
+                    Data Sprawdzenia
+                </div>
+                <div class="col-1">
+                </div>
+            </div>
+        </li>
+
+        @foreach(var figure in history)
+        {
+            <li class="list-group-item">
+                <div class="row text-center">
+                    <div class="col-1">
+                        @(index++)
+                    </div>
+                    <div class="col-1 border-start">
+                        @figure.UserId
+                    </div>
+                    <div class="col-2 border-start">
+                        @figure.User?.UserName
+                    </div>
+                    <div class="col-2 border-start">
+                        @figure.Name
+                    </div>
+                    <div class="col-1 border-start">
+                        @figure.Year
+                    </div>
+                    <div class="col-2 border-start">
+                        @(figure.IsLeap ? "Rok przestępny" : "Rok nieprzestępny")
+                    </div>
+                    <div class="col-2 border-start">
+                        @figure.CheckedAt
+                    </div>
+                    <div class="col-1 border-start">
+                        @if(Model.currentUserId != null && Model.currentUserId == figure.UserId)
+                        {
+                            <form method="post">
+                                <input asp-for="DeleteEntryId" type="hidden" value="@figure.LeapYearCheckId">
+                                <input type="submit" class="delete-button btn btn-danger btn-sm" value="Usuń">
+                            </form>
+                        }
+                    </div>
+                </div>
+            </li>
+        }
+    </ul>
+}

@@ -1,0 +1,85 @@
+﻿@page
+@model LoginModel
+
+@{
+    ViewData["Title"] = "Logowanie";
+}
+
+<h1>@ViewData["Title"]</h1>
+<div class="row">
+    <div class="col-md-4">
+        <section>
+            <form id="konto" method="post">
+                <h2>Zaloguj się używając konta lokalnego.</h2>
+                <hr />
+                <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+                <div class="form-floating mb-3">
+                    <input asp-for="DaneWejsciowe.DaneUwierzytelniajace" class="form-control" aria-required="true" placeholder="Nazwa użytkownika / Email" />
+                    <label asp-for="DaneWejsciowe.DaneUwierzytelniajace" class="form-label">Nazwa użytkownika / Email</label>
+                    <span asp-validation-for="DaneWejsciowe.DaneUwierzytelniajace" class="text-danger"></span>
+                </div>
+                <div class="form-floating mb-3">
+                    <input asp-for="DaneWejsciowe.Haslo" class="form-control" autocomplete="current-password" aria-required="true" placeholder="hasło" />
+                    <label asp-for="DaneWejsciowe.Haslo" class="form-label">Hasło</label>
+                    <span asp-validation-for="DaneWejsciowe.Haslo" class="text-danger"></span>
+                </div>
+                <div class="checkbox mb-3">
+                    <label asp-for="DaneWejsciowe.ZapamietajMnie" class="form-label">
+                        <input class="form-check-input" asp-for="DaneWejsciowe.ZapamietajMnie" />
+                        @Html.DisplayNameFor(m => m.DaneWejsciowe.ZapamietajMnie)
+                    </label>
+                </div>
+                <div>
+                    <button id="zaloguj-submit" type="submit" class="w-100 btn btn-lg btn-primary">Zaloguj się</button>
+                </div>
+                <div>
+                    <p>
+                        <a id="zapomniane-haslo" asp-page="./ZapomnianeHaslo">Zapomniałeś hasła?</a>
+                    </p>
+                    <p>
+                        <a asp-page="./Rejestracja" asp-route-returnUrl="@Model.AdresPowrotu">Zarejestruj się jako nowy użytkownik</a>
+                    </p>
+                    <p>
+                        <a id="ponowne-wyslanie-potwierdzenia" asp-page="./PonowneWyslaniePotwierdzeniaEmail">Ponowne wysłanie potwierdzenia email</a>
+                    </p>
+                </div>
+            </form>
+        </section>
+    </div>
+    <div class="col-md-6 col-md-offset-2">
+        <section>
+            <h3>Użyj innego serwisu do logowania.</h3>
+            <hr />
+            @{
+                if ((Model.ZewnetrzneLogowania?.Count ?? 0) == 0)
+                {
+                <div>
+                    <p>
+                        Brak skonfigurowanych zewnętrznych usług uwierzytelniania. Zobacz ten <a href="https://go.microsoft.com/fwlink/?LinkID=532715">
+                            artykuł
+                            dotyczący konfiguracji tej aplikacji ASP.NET do obsługi logowania za pomocą zewnętrznych usług
+                        </a>.
+                    </p>
+                </div>
+                }
+                else
+                {
+                <form id="zewnetrzne-konto" asp-page="./ZewnetrzneLogowanie" asp-route-returnUrl="@Model.AdresPowrotu" method="post" class="form-horizontal">
+                    <div>
+                        <p>
+                            @foreach (var dostawca in Model.ZewnetrzneLogowania!)
+                                {
+                            <button type="submit" class="btn btn-primary" name="dostawca" value="@dostawca.Nazwa" title="Zaloguj się za pomocą konta @dostawca.Nazwa">@dostawca.NazwaWyswietlana</button>
+                                }
+                        </p>
+                    </div>
+                </form>
+                }
+            }
+        </section>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
